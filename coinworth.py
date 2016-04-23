@@ -69,7 +69,7 @@ def initialize():
 
 
 def run_check():
-	"""Main run function"""
+	"""Main"""
 	with app.app_context():
 		print("Sending a Bitstamp request")
 		market = Market() # Bitstamp response dict

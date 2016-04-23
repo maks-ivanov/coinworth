@@ -11,7 +11,7 @@ from coinworth import app, mailbox
 #      	 Abstractions         #
 ###############################
 
-notified = [] # A lit of notified users
+#TODO: mailgun/mailmonkey support
 
 class Market:
 	"""Converts JSON of BitStamp market data to python object

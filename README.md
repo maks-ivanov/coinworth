@@ -1,6 +1,11 @@
 # Coinworth
 BitCoin data visualization + notification service. Written in Python using Flask.
-##**TODO**:
+##**//TODO**:
+
+!!!set the login credentials to an environment variable
+
+change naive email to mailchimp or something similar
+
 form.html: display the message correctly + **DONE** add required validators
 
 **DONE** write email notification function
@@ -12,8 +17,6 @@ form.html: display the message correctly + **DONE** add required validators
 control for notified users
 
 **DONE** style 
-
-**DONT** write email text
 
 switch to real databases
 
