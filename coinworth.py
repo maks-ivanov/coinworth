@@ -36,7 +36,7 @@ def form():
  
 # accepting: POST requests 
 @app.route('/confirmation/', methods=['POST'])
-def entry(ID=1):
+def entry():
 	# assigning form input to variables
 	name = request.form['Name']
 	email = request.form['Email']
@@ -53,7 +53,7 @@ def entry(ID=1):
 	else:
 		operator = 1
 	# entering the information into the database 
-	update_users(ID, name, email, btc, operator)
+	update_users(name, email, btc, operator, 0)
 	return render_template('confirmation.html', name = name)
 
 
@@ -62,9 +62,10 @@ def entry(ID=1):
 def initialize():
 	"""Setting a schedule for the background process"""
 	with app.app_context():
+		initialize_graph()
 		print("Scheduling...")
 		apsched = BackgroundScheduler()
-		apsched.add_job(run_check, 'interval', seconds=60)
+		apsched.add_job(run_check, 'interval', seconds=5)
 		apsched.start()
 
 
@@ -72,11 +73,12 @@ def run_check():
 	"""Main"""
 	with app.app_context():
 		print("Sending a Bitstamp request")
-		market = Market() # Bitstamp response dict
+		market = Market() # Bitstamp response
 		row = create_row_template(market) # Row factory
 		update_prices(row, connection='test_table.sqlite') # Insert row
 		perform_check(market) 
-		graph()
+		graph(market)
+		print("Done")
 
 
 

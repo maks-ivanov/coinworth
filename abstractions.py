@@ -43,7 +43,7 @@ def create_row_template(market):
 def create_price_table(connection='test_table.sqlite'):
 	connect=sqlite3.connect(connection)
 	cursor=connect.cursor()
-	cursor.execute('''CREATE TABLE prices(last real, high real, low real, vwap real, volume real, bid real, ask real, time timestamp)''')
+	cursor.execute('''CREATE TABLE prices (last real, high real, low real, vwap real, volume real, bid real, ask real, time timestamp)''')
 	connect.commit()
 
 def create_user_table():
@@ -57,7 +57,11 @@ def create_user_table():
 
 	connect=sqlite3.connect('test_users.sqlite')
 	cursor=connect.cursor()
-	cursor.execute('''CREATE TABLE users            (RowID int, name varchar(35), email varchar(50), btc real, operator real)''')
+	cursor.execute('''CREATE TABLE users (name varchar(35),
+										  email varchar(50),
+										  btc real,
+										  operator int,
+										  notified int)''')
 	connect.commit()
 
 def update_prices(row_temp, connection='test_table.sqlite'):
@@ -83,18 +87,20 @@ def update_users(ID, name, email, btc, operator):
 	connect=sqlite3.connect('test_users.sqlite')
 	cursor=connect.cursor()
 	#Inserting new rows
-	cursor.execute("INSERT into users values (?, ?, ?, ?, ?)", # data abstraction violation here
+	cursor.execute("INSERT into users values (?, ?, ?, ?, ?, ?)", # data abstraction violation here
 			(ID, name, email, btc, operator))
 	connect.commit()
 	
 
-def get_column(column, table, connection='test_table.sqlite', min_id = False):
+def get_column(column, table, connection='test_table.sqlite'):
 	"""Gets all the data from a single column in the table and returns an ordered list"""
 	"""temporary If/ Else for when last argument isn't present"""
 	connect=sqlite3.connect(connection)
 	cursor=connect.cursor()
+	min_id = int(cursor.execute("SELECT Count(*) FROM prices").fetchone()[0]) - 10
+	print(min_id)
 	if type(min_id) == int:
-		return [row for row in cursor.execute('SELECT ' + column + ' from '  + table + ' WHERE id > ' + str(min_id) )]
+		return [row for row in cursor.execute('SELECT ' + column + ' from '  + table + ' WHERE RowId > ' + str(min_id) )]
 	else:
 		return [row for row in cursor.execute('SELECT ' + column + ' from '  + table)]
 
@@ -144,14 +150,14 @@ def perform_check(market):
 
 	print("Checking...")
 
-	# Iterating through users in the table
+	# Pull users from the table 
 	for user in [User(row) for row in cursor.execute('SELECT * FROM users')]:
 		compare = func_dict[str(int(user.operator))] # Select the comparator
 		print(market.last, user.btc, user.operator)
 		if compare(market.last, user.btc): # and user['email'] not in notified: 
 			print("Notification triggered!")
 			notify(user.name, user.email, user.btc) # Calling notification procedure
-			#notified.append(user['email']) # Adding the user to the list of notified users.
+			cursor.execute("UPDATE users SET notified = 1 WHERE email=user.email")
 
 
 def notify(name, email, btc):

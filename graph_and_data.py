@@ -1,20 +1,41 @@
 import abstractions as ab
 from time import sleep
 import plotly.plotly as py
-from plotly.graph_objs import Scatter
+import plotly.graph_objs as go
 import plotly.tools as tls
-tls.set_credentials_file(username='lukeanders70', api_key='scl4ou57eu')
+stream_1 = None
+s = None
+def initialize_graph():
+	global stream_1
+	global s
 
-def graph():
-	print("Graphing")
-	"""Fetching data from the table and piping it into to plotly to generate the graph"""
-	num_rows = ab.count_rows("prices", 'test_table2.sqlite') 
-	x_data = ab.get_column('time', 'prices', 'test_table2.sqlite', num_rows - 10)
-	y_data = ab.get_column('last', 'prices', 'test_table2.sqlite', num_rows - 10)
+	tls.set_credentials_file(username='m0597', api_key='9pjer55x5e', stream_ids=['efzmil96bw'])
+	stream_id = tls.get_credentials_file()['stream_ids'][0]
+
+	stream_1 = go.Stream(
+	    token=stream_id,  # link stream id to 'token' key
+	    maxpoints=80      # keep a max of 80 pts on screen
+	)
+
+	# pick up where we left off 
+	x_data = ab.get_column('time', 'prices', 'test_table.sqlite')
+	y_data = ab.get_column('last', 'prices', 'test_table.sqlite')
 
 	# some magic that makes the plot and uploads it to the plotly hosting site
-	trace0 = Scatter(x=x_data, y=y_data)
+	trace0 = go.Scatter(x=x_data, y=y_data, stream = stream_1)
 	data = [trace0]
 	unique_url = py.plot(data, filename = 'basic-line', auto_open=False)
+	# open stream connection
+	s = py.Stream(stream_id)
+	s.open()
+
+
+def graph(m):
+	print("Graphing...")
+	"""Use a market object to write new data to the graph stream"""
+	x = m.time
+	y = m.last
+
+	s.write(dict(x=x, y=y)) 
 
 
