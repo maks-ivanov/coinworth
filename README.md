@@ -28,7 +28,7 @@ ban graph editing tools on the website
 
 **DONE** replace Bitstamp queries with database queries
 
-fix streaming
+**DONE** streaming
 
 
 
