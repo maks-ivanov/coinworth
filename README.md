@@ -1,6 +1,6 @@
 # Coinworth
 BitCoin data visualization + notification service. Written in Python using Flask.
-##**//TODO**:
+##**TODO**:
 
 !!!set the login credentials to an environment variable
 
