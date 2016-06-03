@@ -87,7 +87,7 @@ def update_users(ID, name, email, btc, operator):
 	connect=sqlite3.connect('test_users.sqlite')
 	cursor=connect.cursor()
 	#Inserting new rows
-	cursor.execute("INSERT into users values (?, ?, ?, ?, ?, ?)", # data abstraction violation here
+	cursor.execute("INSERT into users values (?, ?, ?, ?, ?)", # data abstraction violation here
 			(ID, name, email, btc, operator))
 	connect.commit()
 	
@@ -97,7 +97,7 @@ def get_column(column, table, connection='test_table.sqlite'):
 	"""temporary If/ Else for when last argument isn't present"""
 	connect=sqlite3.connect(connection)
 	cursor=connect.cursor()
-	min_id = int(cursor.execute("SELECT Count(*) FROM prices").fetchone()[0]) - 10
+	min_id = int(cursor.execute("SELECT Count(*) FROM prices").fetchone()[0]) - 50
 	print(min_id)
 	if type(min_id) == int:
 		return [row for row in cursor.execute('SELECT ' + column + ' from '  + table + ' WHERE RowId > ' + str(min_id) )]
@@ -116,11 +116,11 @@ def count_rows(table, connection = 'test_table.sqlite'):
 
 class User:
 	def __init__(self, row):
-		self.id = row[0]
-		self.name = row[1]
-		self.email = row[2]
-		self.btc = float(row[3])
-		self.operator = row[4]
+		#self.id = row[0]
+		self.name = row[0]
+		self.email = row[1]
+		self.btc = float(row[2])
+		self.operator = row[3]
 
 
 
@@ -157,12 +157,13 @@ def perform_check(market):
 		if compare(market.last, user.btc): # and user['email'] not in notified: 
 			print("Notification triggered!")
 			notify(user.name, user.email, user.btc) # Calling notification procedure
-			cursor.execute("UPDATE users SET notified = 1 WHERE email=user.email")
+			cursor.execute("UPDATE users SET notified = 1 WHERE email=(?)", (user.email))
 
 
 def notify(name, email, btc):
 	"""Notifies the user at the provided email, using the body of the message determined by the comparing function"""
 	print("Creating a message object...")
+	print(email)
 	msg = Message(
               'Bitcoin Price Alert!',
 	       sender='coinworthupdate@gmail.com',

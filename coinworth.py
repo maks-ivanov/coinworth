@@ -65,7 +65,7 @@ def initialize():
 		initialize_graph()
 		print("Scheduling...")
 		apsched = BackgroundScheduler()
-		apsched.add_job(run_check, 'interval', seconds=5)
+		apsched.add_job(run_check, 'interval', seconds=120)
 		apsched.start()
 
 

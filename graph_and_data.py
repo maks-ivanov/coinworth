@@ -22,9 +22,15 @@ def initialize_graph():
 	y_data = ab.get_column('last', 'prices', 'test_table.sqlite')
 
 	# some magic that makes the plot and uploads it to the plotly hosting site
-	trace0 = go.Scatter(x=x_data, y=y_data, stream = stream_1)
+	trace0 = go.Scatter(x=x_data, y=y_data, stream=stream_1)
 	data = [trace0]
-	unique_url = py.plot(data, filename = 'basic-line', auto_open=False)
+	layout = go.Layout(
+    	xaxis=dict(
+	        showticklabels=False
+    	)
+	)
+	fig = go.Figure(data=data, layout=layout)
+	unique_url = py.plot(fig, filename = 'basic-line', auto_open=False)
 	# open stream connection
 	s = py.Stream(stream_id)
 	s.open()

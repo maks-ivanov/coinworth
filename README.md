@@ -26,6 +26,10 @@ delete test code
 
 ban graph editing tools on the website
 
+set a correct scale for time
+
+do something with the labels
+
 **DONE** replace Bitstamp queries with database queries
 
 **DONE** streaming
