@@ -87,8 +87,8 @@ def update_users(ID, name, email, btc, operator):
 	connect=sqlite3.connect('test_users.sqlite')
 	cursor=connect.cursor()
 	#Inserting new rows
-	cursor.execute("INSERT into users values (?, ?, ?, ?, ?)", # data abstraction violation here
-			(ID, name, email, btc, operator))
+	cursor.execute("INSERT into users values (?, ?, ?, ?, ?)", # abstraction violation here
+			(name, email, btc, operator, 0))
 	connect.commit()
 	
 
@@ -121,6 +121,7 @@ class User:
 		self.email = row[1]
 		self.btc = float(row[2])
 		self.operator = row[3]
+		self.notified = row[4]
 
 
 
@@ -132,7 +133,7 @@ def at_most(market, btc):
 	"""Returns True if user's BTC amount converted to USD using market BTC price is worth no more than the user defined USD amount"""
 	return float(btc)<float(market)
  
-func_dict = {
+func_chz = {
 # A dictionary for quick access to the comparator functions
 	"0": at_least,
 	"1": at_most,
@@ -154,7 +155,7 @@ def perform_check(market):
 	for user in [User(row) for row in cursor.execute('SELECT * FROM users')]:
 		compare = func_dict[str(int(user.operator))] # Select the comparator
 		print(market.last, user.btc, user.operator)
-		if compare(market.last, user.btc): # and user['email'] not in notified: 
+		if compare(market.last, user.btc) and (not user.notified): # and user['email'] not in notified: 
 			print("Notification triggered!")
 			notify(user.name, user.email, user.btc) # Calling notification procedure
 			cursor.execute("UPDATE users SET notified = 1 WHERE email=(?)", (user.email))

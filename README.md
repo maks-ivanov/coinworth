@@ -28,7 +28,7 @@ ban graph editing tools on the website
 
 set a correct scale for time
 
-do something with the labels
+do something with the labels (X axis temporarily disabled)
 
 **DONE** replace Bitstamp queries with database queries
 
