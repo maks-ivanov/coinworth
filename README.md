@@ -1,5 +1,8 @@
 # Coinworth
-BitCoin price alert with a simple graph. Written in Python using Flask.
+BitCoin email price alert with a simple graph. Written in Python using Flask.
+
+Disclaimer: first presonal coding project
+
 ##**TODO**:
 
 set the login credentials to an environment variable
