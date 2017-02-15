@@ -1,5 +1,5 @@
 # Coinworth
-BitCoin data visualization + notification service. Written in Python using Flask.
+BitCoin price alert with a simple graph. Written in Python using Flask.
 ##**TODO**:
 
 set the login credentials to an environment variable
